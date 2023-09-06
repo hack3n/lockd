@@ -16,12 +16,12 @@
                 >✕</button>
         </form>
         <form method="POST" action="?/updateLock">
-            <input name="lock" value={lock.id} hidden />
+            <input name="lock" value={lock?.id} hidden />
             <div class="form-control mb-4">
                 <input
                     type="text"
                     name="name"
-                    value={lock.name}
+                    value={lock?.name}
                     placeholder="Lock Name"
                     class="input input-bordered w-full max-w-xs" />
             </div>
@@ -29,7 +29,7 @@
                 <input
                     type="text"
                     name="pinning"
-                    value={lock.pinning}
+                    value={lock?.pinning}
                     placeholder="Pinning Description"
                     class="input input-bordered w-full max-w-xs" />
             </div>
@@ -37,7 +37,7 @@
                 <input
                     type="number"
                     name="points"
-                    value={lock.points}
+                    value={lock?.points}
                     placeholder="Points Value"
                     class="input input-bordered w-full max-w-xs" />
             </div>
@@ -49,7 +49,7 @@
             method="POST"
             action="?/deleteLock"
             class="absolute left-6 bottom-6">
-            <input name="lock" value={lock.id} hidden />
+            <input name="lock" value={lock?.id} hidden />
             <button class="btn btn-primary btn-error">Delete</button>
         </form>
     </div>
