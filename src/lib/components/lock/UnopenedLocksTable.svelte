@@ -15,7 +15,6 @@
             <tr>
                 <th>Name</th>
                 <th>Pinning</th>
-                <th>Opens</th>
                 <th>Points</th>
             </tr>
         </thead>
@@ -24,7 +23,6 @@
                 <tr>
                     <td>{lock.name}</td>
                     <td>{lock.pinning}</td>
-                    <td>{lock.opens.length}</td>
                     <td>{lock.points}</td>
                 </tr>
             {/each}

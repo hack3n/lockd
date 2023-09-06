@@ -1,12 +1,15 @@
 <script>
     import LeaderboardTable from '$lib/components/competitor/LeaderboardTable.svelte';
     import UnopenedLocksTable from '$lib/components/lock/UnopenedLocksTable.svelte';
+    import { onMount } from 'svelte';
 
     export let data;
 
-    setInterval(() => {
-        //TODO: refresh
-    }, 5 * 1000);
+    onMount(() => {
+        setInterval(() => {
+            location.reload();
+        }, 30 * 1000);
+    });
 </script>
 
 <article class="mt-4 prose">

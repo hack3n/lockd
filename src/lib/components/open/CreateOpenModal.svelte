@@ -1,9 +1,24 @@
 <script lang="ts">
     import type { Competitor, Lock } from '@prisma/client';
 
+    import TomSelect from 'tom-select';
+    import { onMount } from 'svelte';
+
     export let modal;
     export let competitors: Competitor[];
     export let locks: Lock[];
+
+    onMount(() => {
+        const options = {
+            sortField: {
+                field: 'text',
+                direction: 'asc',
+            },
+        };
+
+        new TomSelect('#competitor-select', options);
+        new TomSelect('#lock-select', options);
+    });
 </script>
 
 <dialog bind:this={modal} class="modal">
@@ -18,9 +33,12 @@
         <form method="POST" action="?/createOpen">
             <div class="form-control mb-4">
                 <select
-                    class="select select-bordered w-full max-w-xs"
-                    name="competitor">
-                    <option disabled selected>Competitor</option>
+                    id="competitor-select"
+                    class="w-full max-w-xs"
+                    name="competitor"
+                    placeholder="Competitor"
+                    autocomplete="off">
+                    <option value="">Competitor</option>
                     {#each competitors as competitor}
                         <option value={competitor.id}
                             >{competitor.username}</option>
@@ -29,9 +47,12 @@
             </div>
             <div class="form-control my-4">
                 <select
-                    class="select select-bordered w-full max-w-xs"
-                    name="lock">
-                    <option disabled selected>Lock</option>
+                    id="lock-select"
+                    class="w-full max-w-xs"
+                    name="lock"
+                    placeholder="Lock"
+                    autocomplete="off">
+                    <option value="">Lock</option>
                     {#each locks as lock}
                         <option value={lock.id}>{lock.name}</option>
                     {/each}
