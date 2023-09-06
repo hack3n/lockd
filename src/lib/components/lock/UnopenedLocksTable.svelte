@@ -1,7 +1,9 @@
-<script>
-    export let locks;
+<script lang="ts">
+    import type { LockWithOpens } from '$lib/types';
 
-    const unopenedLocks = locks.filter(lock => lock.opens.length == 0);
+    export let locks: LockWithOpens[];
+
+    const unopenedLocks = locks.filter((lock) => lock.opens.length == 0);
 </script>
 
 <article class="mt-4 prose">
@@ -19,13 +21,13 @@
         </thead>
         <tbody>
             {#each unopenedLocks as lock}
-              <tr>
-                <td>{ lock.name }</td>
-                <td>{ lock.pinning }</td>
-                <td>{ lock.opens?.length }</td>
-                <td>{ lock.points }</td>
-              </tr>
+                <tr>
+                    <td>{lock.name}</td>
+                    <td>{lock.pinning}</td>
+                    <td>{lock.opens.length}</td>
+                    <td>{lock.points}</td>
+                </tr>
             {/each}
-          </tbody>
+        </tbody>
     </table>
 </div>

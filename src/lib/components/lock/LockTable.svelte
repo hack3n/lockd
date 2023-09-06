@@ -1,43 +1,45 @@
-<script>
-  import UpdateLockModal from "./UpdateLockModal.svelte";
+<script lang="ts">
+    import type { LockWithOpens, Modal } from '$lib/types';
 
-  export let locks;
+    import UpdateLockModal from './UpdateLockModal.svelte';
 
-  let modal;
-  let modalLock;
+    export let locks: LockWithOpens[];
 
-  function openModal(lock){
-    modalLock = lock;
-    modal.showModal();
-  }
+    let modal: Modal;
+    let modalLock: LockWithOpens;
+
+    function openModal(lock: LockWithOpens) {
+        modalLock = lock;
+        modal.showModal();
+    }
 </script>
 
-<UpdateLockModal bind:modal={modal} lock={modalLock}></UpdateLockModal>
+<UpdateLockModal bind:modal lock={modalLock} />
 
 <article class="mt-4 prose">
-  <h2>Locks</h2>
+    <h2>Locks</h2>
 </article>
 <div class="overflow-x-auto">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Pinning</th>
-        <th>Opens</th>
-        <th>Points</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each locks as lock}
-        <tr class="hover" on:click={() => openModal(lock)}>
-          <th>{lock.id}</th>
-          <td>{lock.name}</td>
-          <td>{lock.pinning}</td>
-          <td>{lock.opens?.length}</td>
-          <td>{lock.points}</td>
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Pinning</th>
+                <th>Opens</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each locks as lock}
+                <tr class="hover" on:click={() => openModal(lock)}>
+                    <th>{lock.id}</th>
+                    <td>{lock.name}</td>
+                    <td>{lock.pinning}</td>
+                    <td>{lock.opens.length}</td>
+                    <td>{lock.points}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
 </div>

@@ -1,5 +1,7 @@
-<script>
-    export let opens = [];
+<script lang="ts">
+    import type { OpenWithLock } from '$lib/types';
+
+    export let opens: OpenWithLock[] = [];
 </script>
 
 <div class="overflow-x-auto">
@@ -23,7 +25,8 @@
                         <td>
                             <form method="POST" action="?/deleteOpen">
                                 <input name="open" value={open?.id} hidden />
-                                <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+                                <button class="btn btn-sm btn-circle btn-ghost"
+                                    >✕</button>
                             </form>
                         </td>
                     </tr>
