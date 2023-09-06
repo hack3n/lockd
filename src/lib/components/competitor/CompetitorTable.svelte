@@ -1,0 +1,45 @@
+<script>
+    import UpdateCompetitorModal from "./UpdateCompetitorModal.svelte";
+
+  export let competitors;
+
+  let modal;
+  let modalCompetitor;
+
+  function openModal(competitor){
+    modalCompetitor = competitor;
+    modal.showModal();
+  }
+</script>
+
+<UpdateCompetitorModal bind:modal={modal} competitor={modalCompetitor}></UpdateCompetitorModal>
+
+<article class="mt-4 prose">
+  <h2>Competitors</h2>
+</article>
+<div class="overflow-x-auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Opens</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each competitors as competitor}
+        <tr class="hover" on:click={() => openModal(competitor)}>
+          <th>{ competitor.id }</th>
+          <td>{ competitor.username }</td>
+          <td>{ competitor.opens.length }</td>
+          <td>
+            { competitor.opens.reduce((accumulator, open) => {
+              return accumulator + open.lock.points;
+            }, 0) }
+          </td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
