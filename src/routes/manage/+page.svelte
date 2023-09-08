@@ -37,23 +37,23 @@
     </div>
 {/if}
 
-<div class="mt-4 mb-8">
+<div class="mb-8">
     <button
-        class="btn btn-primary"
+        class="btn btn-primary mt-4"
         on:click={() => {
             createOpenModal.showModal();
         }}>
         New Open
     </button>
     <button
-        class="btn btn-primary"
+        class="btn btn-primary mt-4"
         on:click={() => {
             createCompetitorModal.showModal();
         }}>
         New Competitor
     </button>
     <button
-        class="btn btn-primary"
+        class="btn btn-primary mt-4"
         on:click={() => {
             createLockModal.showModal();
         }}>

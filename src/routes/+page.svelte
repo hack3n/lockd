@@ -15,16 +15,16 @@
 <article class="mt-4 prose">
     <h2>Statistics</h2>
 </article>
-<div class="stats">
+<div class="stats stats-vertical lg:stats-horizontal">
     <div class="stat pl-0">
         <div class="stat-title">Locks Opened</div>
         <div class="stat-value">{data.opens.length}</div>
     </div>
-    <div class="stat">
+    <div class="stat pl-0 lg:pl-6">
         <div class="stat-title">Competitors</div>
         <div class="stat-value">{data.competitors.length}</div>
     </div>
-    <div class="stat">
+    <div class="stat pl-0 lg:pl-6">
         <div class="stat-title">Total Points Scored</div>
         <div class="stat-value">
             {data.opens.reduce((accumulator, open) => {
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div>
         <LeaderboardTable competitors={data.competitors} />
     </div>

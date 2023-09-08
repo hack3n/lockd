@@ -5,6 +5,11 @@ import type { Action } from '@sveltejs/kit';
 export const load: Action = (async () => {
     return {
         competitors: await db.competitor.findMany({
+            orderBy: [
+                {
+                    username: 'asc',
+                },
+            ],
             include: {
                 opens: {
                     include: {
@@ -14,6 +19,11 @@ export const load: Action = (async () => {
             },
         }),
         locks: await db.lock.findMany({
+            orderBy: [
+                {
+                    name: 'asc',
+                },
+            ],
             include: {
                 opens: true,
             },
