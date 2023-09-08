@@ -2,6 +2,8 @@
 
 A simple project using SvelteKit, Prisma, sqlite, Tailwind CSS, and TypeScript.
 
+## Development
+
 Run these following commands to try locally:
 
 ```bash
@@ -21,3 +23,13 @@ Database seeding:
 npx prisma db seed
 ```
 
+## Production
+
+For production:
+
+```bash
+npm install
+npx prisma migrate deploy
+npm run build
+npm run start
+```
