@@ -3,7 +3,7 @@
 
     export let locks: LockWithOpens[];
 
-    const unopenedLocks = locks.filter((lock) => lock.opens.length == 0);
+    $: unopenedLocks = locks.filter((lock) => lock.opens.length == 0);
 </script>
 
 <article class="mt-4 prose">

@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "^5.0.0"
+		"@prisma/client": "^5.0.0",
+		"time-until": "^1.0.0"
 	}
 }

@@ -3,15 +3,14 @@
 
     export let competitors: CompetitorWithOpens[];
 
-    const sortedCompetitors = competitors
+    $: sortedCompetitors = competitors
         .map((competitor) => ({
             ...competitor,
             points: competitor.opens.reduce((accumulator, open) => {
                 return accumulator + open.lock.points;
             }, 0),
         }))
-        .sort((a, b) => a.points < b.points)
-        .slice(0, 10);
+        .sort((a, b) => a.points < b.points);
 
     function leaderClass(place: Number) {
         switch (place) {
