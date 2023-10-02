@@ -45,7 +45,6 @@
         <li><a href="#production">Production</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -109,16 +108,6 @@ npm run start
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -171,7 +160,7 @@ Project Link: [https://github.com/hack3n/lockd](https://github.com/hack3n/lockd)
 [issues-shield]: https://img.shields.io/github/issues/hack3n/lockd.svg?style=for-the-badge
 [issues-url]: https://github.com/hack3n/lockd/issues
 [license-shield]: https://img.shields.io/github/license/hack3n/lockd.svg?style=for-the-badge
-[license-url]: https://github.com/hack3n/lockd/blob/master/LICENSE.txt
+[license-url]: https://github.com/hack3n/lockd/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/liam-o-brien-017aa6178/
 [product-screenshot]: screenshot.png
