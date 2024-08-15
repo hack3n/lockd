@@ -64,7 +64,7 @@ lockd is a platform you can use to track and manage your lockpicking competition
 
 ### Built With
 
--   [![Svelte][Svelte.dev]][Svelte-url]
+[![Svelte][Svelte.dev]][Svelte-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
