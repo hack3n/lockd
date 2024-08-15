@@ -56,9 +56,7 @@
 
 ## About The Project
 
-![lockd Screenshot][product-screenshot]
-
-lockd is a platform you can use to track and manage your lockpicking competitions.
+lockd is a platform you can use to track and manage your lockpicking competitions. It has been used at several hacker conferences in Australia with great success.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -163,6 +161,5 @@ Project Link: [https://github.com/hack3n/lockd](https://github.com/hack3n/lockd)
 [license-url]: https://github.com/hack3n/lockd/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/liam-o-brien-017aa6178/
-[product-screenshot]: screenshot.png
 [Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
 [Svelte-url]: https://svelte.dev/
