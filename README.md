@@ -19,7 +19,7 @@
   <p align="center">
     An open-source lockpicking competition platform.
     <br />
-    <a href="https://github.com/hack3n/lockd"><strong>Explore the docs »</strong></a>
+    <a href="#getting-started"><strong>Get Started »</strong></a>
     <br />
     <br />
     <a href="https://github.com/hack3n/lockd/issues">Report Bug</a>
