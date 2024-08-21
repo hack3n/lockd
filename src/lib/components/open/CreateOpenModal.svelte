@@ -24,7 +24,7 @@
 <dialog bind:this={modal} class="modal">
     <div class="modal-box">
         <h3 class="font-bold text-lg">Add Lock Open</h3>
-        <p class="py-4">Enter competitor and lock</p>
+        <p class="py-4">Enter competitor and lock.</p>
         <form method="dialog">
             <button
                 class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -40,8 +40,8 @@
                     autocomplete="off">
                     <option value="">Competitor</option>
                     {#each competitors as competitor}
-                        <option value={competitor.id}
-                            >{competitor.username}</option>
+                        <option value={lock.id}
+                            >{lock.name} ({lock.ref})</option>
                     {/each}
                 </select>
             </div>

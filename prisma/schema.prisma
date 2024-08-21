@@ -17,6 +17,7 @@ model Competitor {
 
 model Lock {
   id        Int      @id @default(autoincrement())
+  ref       Int      @unique
   name      String   @unique
   pinning   String?
   points    Int

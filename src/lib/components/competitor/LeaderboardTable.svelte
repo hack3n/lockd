@@ -10,7 +10,7 @@
                 return accumulator + open.lock.points;
             }, 0),
         }))
-        .sort((a, b) => a.points < b.points);
+        .sort((a, b) => (a.points < b.points ? 1 : -1));
 
     function leaderClass(place: Number) {
         switch (place) {

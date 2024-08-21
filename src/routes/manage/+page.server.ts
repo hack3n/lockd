@@ -73,12 +73,19 @@ export const actions: Actions = {
     createLock: async (event) => {
         const data = await event.request.formData();
 
+        const refFormValue = data.get('ref') ?? '';
         const nameFormValue = data.get('name') ?? '';
         const pinningFormValue = data.get('pinning') ?? '';
         const pointsFormValue = data.get('points') ?? '';
 
-        const points = parseInt(pointsFormValue.toString());
+        const ref = parseInt(refFormValue.toString());
+        if (Number.isNaN(ref) || !ref) {
+            return fail(400, {
+                error: 'ID must be a valid integer.',
+            });
+        }
 
+        const points = parseInt(pointsFormValue.toString());
         if (Number.isNaN(points) || !points) {
             return fail(400, {
                 error: 'Points must be a valid integer.',
@@ -88,6 +95,7 @@ export const actions: Actions = {
         try {
             await db.lock.create({
                 data: {
+                    ref: ref,
                     name: nameFormValue.toString(),
                     pinning: pinningFormValue.toString(),
                     points: points,
@@ -95,7 +103,7 @@ export const actions: Actions = {
             });
         } catch {
             return fail(400, {
-                error: 'Lock name must be unique.',
+                error: 'Lock name and reference must be unique.',
             });
         }
 
@@ -225,6 +233,7 @@ export const actions: Actions = {
         const data = await event.request.formData();
 
         const lockIdFormValue = data.get('lock') ?? '';
+        const lockRefFormValue = data.get('ref') ?? '';
         const nameFormValue = data.get('name') ?? '';
         const pinningFormValue = data.get('pinning') ?? '';
         const pointsFormValue = data.get('points') ?? '';
@@ -233,6 +242,13 @@ export const actions: Actions = {
         if (Number.isNaN(lockId) || !lockId) {
             return fail(400, {
                 error: 'ID must be a valid integer.',
+            });
+        }
+
+        const lockRef = parseInt(lockRefFormValue.toString());
+        if (Number.isNaN(lockRef) || !lockRef) {
+            return fail(400, {
+                error: 'Ref must be a valid integer.',
             });
         }
 
@@ -249,6 +265,7 @@ export const actions: Actions = {
                     id: lockId,
                 },
                 data: {
+                    ref: lockRef,
                     name: nameFormValue.toString(),
                     pinning: pinningFormValue.toString(),
                     points: points,
@@ -256,7 +273,7 @@ export const actions: Actions = {
             });
         } catch {
             return fail(400, {
-                error: 'Lock name must be unique.',
+                error: 'Lock name and reference must be unique.',
             });
         }
 

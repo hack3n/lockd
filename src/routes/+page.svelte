@@ -3,15 +3,20 @@
     import LeaderboardTable from '$lib/components/competitor/LeaderboardTable.svelte';
     import UnopenedLocksTable from '$lib/components/lock/UnopenedLocksTable.svelte';
     import { onDestroy } from 'svelte';
-    import timeUntil from 'time-until';
+    import humanizeDuration from 'humanize-duration';
 
     export let data;
 
     let timeRemaining = '';
-    let endDate = new Date('2023-09-10T15:00:00.000');
+    let endDate = new Date(import.meta.env.VITE_END_DATE);
 
     let setTimeRemaining = () => {
-        timeRemaining = timeUntil(endDate).string;
+        let unixTimeRemaining = new Date().getTime() - endDate.getTime();
+
+        timeRemaining =
+            unixTimeRemaining < 0
+                ? humanizeDuration(unixTimeRemaining, { largest: 2 })
+                : 'Competition over';
     };
     setTimeRemaining();
 

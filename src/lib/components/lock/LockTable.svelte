@@ -23,7 +23,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Ref</th>
                 <th>Name</th>
                 <th>Pinning</th>
                 <th>Opens</th>
@@ -33,7 +33,7 @@
         <tbody>
             {#each locks as lock}
                 <tr class="hover" on:click={() => openModal(lock)}>
-                    <th>{lock.id}</th>
+                    <th>{lock.ref}</th>
                     <td>{lock.name}</td>
                     <td>{lock.pinning}</td>
                     <td>{lock.opens.length}</td>

@@ -19,6 +19,14 @@
             <input name="lock" value={lock?.id} hidden />
             <div class="form-control mb-4">
                 <input
+                    type="number"
+                    name="ref"
+                    value={lock?.ref}
+                    placeholder="Lock ID"
+                    class="input input-bordered w-full max-w-xs" />
+            </div>
+            <div class="form-control mb-4">
+                <input
                     type="text"
                     name="name"
                     value={lock?.name}

@@ -16,6 +16,13 @@
         <form method="POST" action="?/createLock">
             <div class="form-control mb-4">
                 <input
+                    type="number"
+                    name="ref"
+                    placeholder="Lock ID"
+                    class="input input-bordered w-full max-w-xs" />
+            </div>
+            <div class="form-control mb-4">
+                <input
                     type="text"
                     name="name"
                     placeholder="Lock Name"
