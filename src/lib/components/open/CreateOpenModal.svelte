@@ -40,8 +40,7 @@
                     autocomplete="off">
                     <option value="">Competitor</option>
                     {#each competitors as competitor}
-                        <option value={lock.id}
-                            >{lock.name} ({lock.ref})</option>
+                        <option value={competitor.id}>{competitor.username}</option>
                     {/each}
                 </select>
             </div>
@@ -54,7 +53,7 @@
                     autocomplete="off">
                     <option value="">Lock</option>
                     {#each locks as lock}
-                        <option value={lock.id}>{lock.name}</option>
+                        <option value={lock.id}>{lock.name} ({lock.ref})</option>
                     {/each}
                 </select>
             </div>
