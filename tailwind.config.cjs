@@ -9,18 +9,6 @@ module.exports = {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         display: ['"Space Grotesk"', ...defaultTheme.fontFamily.sans],
       },
-      backgroundImage: {
-        'lockd-grid':
-          'linear-gradient(transparent 0, transparent 94%, rgba(255,255,255,0.04) 95%), linear-gradient(90deg, transparent 0, transparent 94%, rgba(255,255,255,0.04) 95%)',
-        'lockd-radial':
-          'radial-gradient(circle at 20% 20%, rgba(129,140,248,0.35), transparent 45%), radial-gradient(circle at 80% 0%, rgba(16,185,129,0.25), transparent 40%), radial-gradient(circle at 30% 80%, rgba(14,165,233,0.25), transparent 45%)',
-      },
-      animation: {
-        'pulse-slow': 'pulse 4s ease-in-out infinite',
-      },
-      boxShadow: {
-        glow: '0 25px 65px rgba(94, 96, 255, 0.35)',
-      },
     },
   },
   plugins: [require('@tailwindcss/typography'), require('daisyui')],

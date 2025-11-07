@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount, tick } from 'svelte';
     import type { CompetitorWithOpens } from '$lib/types';
 
     type LeaderboardCompetitor = CompetitorWithOpens & { points: number };
@@ -20,109 +21,123 @@
         )
         .sort((a, b) => (a.points < b.points ? 1 : -1));
 
-    $: visibleCompetitors =
-        typeof limit === 'number' && limit > 0 ? sortedCompetitors.slice(0, limit) : sortedCompetitors;
+    $: userLimit =
+        typeof limit === 'number' && limit > 0 ? Math.min(limit, sortedCompetitors.length) : sortedCompetitors.length;
 
-    $: maxPoints = visibleCompetitors.reduce((max, competitor) => Math.max(max, competitor.points), 0);
+    let computedLimit: number | null = null;
+    let wrapperEl: HTMLElement | null = null;
+    let headerEl: HTMLElement | null = null;
+    let listEl: HTMLOListElement | null = null;
+    let resizeObserver: ResizeObserver | null = null;
+    let measureScheduled = false;
 
     const padRank = (place: number) => place.toString().padStart(2, '0');
 
-    const rowAccent = (place: number) => {
+    const podiumRowClass = (place: number) => {
         switch (place) {
             case 1:
-                return 'bg-primary/5';
+                return 'bg-white/10';
             case 2:
-                return 'bg-secondary/5';
+                return 'bg-white/5';
             case 3:
-                return 'bg-accent/5';
+                return 'bg-white/5';
             default:
-                return 'hover:bg-base-300/30';
+                return '';
         }
     };
 
-    const badgeAccent = (place: number) => {
+    const podiumRankClass = (place: number) => {
         switch (place) {
             case 1:
-                return 'bg-gradient-to-r from-amber-300 to-orange-500 text-slate-900';
+                return 'text-amber-300';
             case 2:
-                return 'bg-gradient-to-r from-slate-200 to-gray-400 text-slate-900';
+                return 'text-slate-200';
             case 3:
-                return 'bg-gradient-to-r from-amber-600 to-orange-700 text-white';
+                return 'text-orange-200';
             default:
-                return 'bg-base-300/60 text-base-content/80';
+                return 'text-base-content/60';
         }
     };
 
-    const progressWidth = (points: number) => (maxPoints ? Math.max((points / maxPoints) * 100, 4) : 0);
+    const scheduleMeasure = () => {
+        if (measureScheduled) return;
+        measureScheduled = true;
+        tick().then(() => {
+            measureScheduled = false;
+            measureLimit();
+        });
+    };
 
-    const averagePoints = (competitor: LeaderboardCompetitor) =>
-        competitor.opens.length ? competitor.points / competitor.opens.length : 0;
+    const measureLimit = () => {
+        if (!wrapperEl || !headerEl || !listEl) {
+            computedLimit = userLimit;
+            return;
+        }
+
+        const wrapperHeight = wrapperEl.clientHeight;
+        const headerHeight = headerEl.clientHeight;
+        const available = Math.max(0, wrapperHeight - headerHeight - 12);
+        const firstRow = listEl.querySelector('li');
+        const rowHeight = firstRow?.clientHeight ?? 0;
+
+        if (!rowHeight || !available) {
+            computedLimit = userLimit;
+            return;
+        }
+
+        const rowsThatFit = Math.max(1, Math.floor(available / rowHeight));
+        computedLimit = Math.min(userLimit, rowsThatFit, sortedCompetitors.length);
+    };
+
+    onMount(() => {
+        scheduleMeasure();
+        resizeObserver = new ResizeObserver(() => scheduleMeasure());
+        if (wrapperEl) {
+            resizeObserver.observe(wrapperEl);
+        }
+
+        return () => {
+            resizeObserver?.disconnect();
+        };
+    });
+
+    $: {
+        // re-measure whenever data or userLimit changes
+        sortedCompetitors;
+        userLimit;
+        scheduleMeasure();
+    }
+
+    $: visibleCompetitors = sortedCompetitors.slice(0, computedLimit ?? userLimit);
 </script>
 
-<section class="glass-panel rounded-3xl p-6 md:p-8 h-full flex flex-col">
-    <div class="flex flex-wrap items-baseline justify-between gap-4">
-        <div>
-            <p class="text-xs uppercase tracking-[0.45em] text-base-content/60">{title}</p>
-            <h2 class="text-2xl font-display text-white">Top performers</h2>
-        </div>
-        <span class="text-xs uppercase tracking-[0.35em] text-base-content/50">
-            Showing {visibleCompetitors.length} / {sortedCompetitors.length}
+<section class="glass-panel rounded-2xl p-3 md:p-4 h-full flex flex-col min-h-0" bind:this={wrapperEl}>
+    <div class="flex items-center justify-between gap-3" bind:this={headerEl}>
+        <h2 class="text-base md:text-md font-display text-white tracking-[0.2em] uppercase">{title}</h2>
+        <span class="text-[0.6rem] uppercase tracking-[0.35em] text-base-content/60">
+            {visibleCompetitors.length}/{sortedCompetitors.length}
         </span>
     </div>
-    <div class="mt-6 overflow-hidden rounded-2xl border border-white/5">
-        <table class="table w-full">
-            <thead class="text-xs uppercase tracking-[0.3em] text-base-content/50 bg-base-200/60">
-                <tr>
-                    <th>Place</th>
-                    <th>Competitor</th>
-                    <th>Locks</th>
-                    <th class="text-right">Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each visibleCompetitors as competitor, index}
-                    <tr class={`align-middle transition ${rowAccent(index + 1)}`}>
-                        <td class="font-mono text-sm text-base-content/70">
-                            <span
-                                class={`inline-flex items-center justify-center rounded-full px-3 py-1 font-semibold tracking-wide ${badgeAccent(index + 1)}`}>
-                                {padRank(index + 1)}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="font-semibold text-base text-white">{competitor.username}</div>
-                            <div class="text-xs text-base-content/60 uppercase tracking-[0.3em]">
-                                {numberFormatter.format(competitor.opens.length)} opens
-                            </div>
-                        </td>
-                        <td class="max-w-[220px]">
-                            <div class="flex items-center gap-3">
-                                <span class="font-mono text-xl text-base-content/70">
-                                    {numberFormatter.format(competitor.opens.length)}
-                                </span>
-                                <div class="flex-1 h-2 rounded-full bg-base-300/60 overflow-hidden">
-                                    <div
-                                        class={`h-full rounded-full ${index === 0 ? 'bg-primary' : 'bg-secondary'}`}
-                                        style={`width: ${progressWidth(competitor.points)}%;`}></div>
-                                </div>
-                            </div>
-                            <div class="text-[0.65rem] uppercase tracking-[0.4em] text-base-content/50 mt-2">
-                                Share of leader
-                            </div>
-                        </td>
-                        <td class="text-right">
-                            <div class="text-2xl font-display text-white leading-tight">
-                                {numberFormatter.format(competitor.points)}
-                                <span class="text-sm text-base-content/60 ml-1">pts</span>
-                            </div>
-                            <div class="text-xs text-base-content/50">
-                                Avg {averagePoints(competitor).toFixed(1)} pts / lock
-                            </div>
-                        </td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
+    <div class="mt-3 flex-1 min-h-0">
+        <ol class="divide-y divide-white/10 text-xs md:text-sm text-base-content/80" bind:this={listEl}>
+            {#each visibleCompetitors as competitor, index}
+                <li class={`flex items-center gap-3 py-2 ${podiumRowClass(index + 1)}`}>
+                    <span
+                        class={`font-mono text-xs md:text-sm font-semibold ${podiumRankClass(index + 1)} w-10 text-right`}>
+                        #{padRank(index + 1)}
+                    </span>
+                    <div class="flex-1 min-w-0 flex items-center justify-between gap-2">
+                        <p class="font-semibold text-white truncate">{competitor.username}</p>
+                        <span class="text-[0.55rem] uppercase tracking-[0.35em] text-base-content/60 whitespace-nowrap">
+                            {numberFormatter.format(competitor.opens.length)} opens
+                        </span>
+                    </div>
+                    <span class="font-semibold tabular-nums text-xs md:text-sm text-white text-right w-20">
+                        {numberFormatter.format(competitor.points)}
+                        <span class="text-[0.6em] text-base-content/60">pts</span>
+                    </span>
+                </li>
+            {/each}
+        </ol>
     </div>
 </section>
-
-```

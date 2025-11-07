@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
     import { invalidateAll } from '$app/navigation';
     import LeaderboardTable from '$lib/components/competitor/LeaderboardTable.svelte';
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount, tick } from 'svelte';
     import humanizeDuration from 'humanize-duration';
     import type { PageData } from './$types';
     import type { CompetitorWithOpens } from '$lib/types';
@@ -23,6 +23,11 @@
     let endDate = new Date(import.meta.env.VITE_END_DATE);
     const numberFormatter = new Intl.NumberFormat('en-US');
     let heroStats: HeroStat[] = [];
+    let chaseListEl: HTMLUListElement | null = null;
+    let chaseObserver: ResizeObserver | null = null;
+    let chaseMeasureScheduled = false;
+    let lastObservedChaseList: Element | null = null;
+    const CHASE_SCROLL_SPEED_PX_PER_SEC = 200;
 
     let setTimeRemaining = () => {
         let unixTimeRemaining = new Date().getTime() - endDate.getTime();
@@ -49,6 +54,8 @@
 
     type OpenWithLock = CompetitorWithOpens['opens'][number];
     type OpenFromData = PageData['opens'][number];
+
+    let chaseScrollDurationSeconds = 20;
 
     const calculatePoints = (competitor: CompetitorWithOpens) => {
         return competitor.opens.reduce((accumulator: number, open: OpenWithLock) => {
@@ -80,12 +87,12 @@
         {
             label: 'Locks opened',
             value: numberFormatter.format(data.opens.length),
-            helper: 'Recorded attempts',
+            helper: '',
         },
         {
             label: 'Competitors checked in',
             value: numberFormatter.format(data.competitors.length),
-            helper: 'Active pickers on-site',
+            helper: '',
         },
         {
             label: 'Points awarded',
@@ -97,138 +104,119 @@
     $: chasingCompetitors = rankedCompetitors.slice(10);
     $: duplicatedChasingCompetitors =
         chasingCompetitors.length > 0 ? [...chasingCompetitors, ...chasingCompetitors] : [];
-    $: chaseScrollDurationSeconds = Math.max(chasingCompetitors.length * 3, 30);
+
+    const updateChaseScrollDuration = () => {
+        if (!chaseListEl) {
+            chaseScrollDurationSeconds = 12;
+            return;
+        }
+
+        const totalHeight = chaseListEl.scrollHeight;
+        if (!totalHeight) {
+            chaseScrollDurationSeconds = 12;
+            return;
+        }
+
+        const cycleDistance = totalHeight / 2;
+        chaseScrollDurationSeconds = Math.max(cycleDistance / CHASE_SCROLL_SPEED_PX_PER_SEC, 6);
+    };
+
+    const scheduleChaseMeasurement = () => {
+        if (chaseMeasureScheduled) return;
+        chaseMeasureScheduled = true;
+        tick().then(() => {
+            chaseMeasureScheduled = false;
+            updateChaseScrollDuration();
+        });
+    };
+
+    onMount(() => {
+        scheduleChaseMeasurement();
+        chaseObserver = new ResizeObserver(() => scheduleChaseMeasurement());
+        if (chaseListEl) {
+            chaseObserver.observe(chaseListEl);
+        }
+
+        return () => {
+            chaseObserver?.disconnect();
+            lastObservedChaseList = null;
+        };
+    });
+
+    $: duplicatedChasingCompetitors, scheduleChaseMeasurement();
+    $: if (chaseObserver && chaseListEl && chaseListEl !== lastObservedChaseList) {
+        if (lastObservedChaseList) {
+            chaseObserver.unobserve(lastObservedChaseList);
+        }
+        chaseObserver.observe(chaseListEl);
+        lastObservedChaseList = chaseListEl;
+        scheduleChaseMeasurement();
+    }
 </script>
 
-<section class="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] items-stretch">
-    <div class="glass-panel rounded-3xl p-6 md:p-8 grid-overlay shadow-glow">
-        <div class="flex flex-col gap-6">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.6em] text-base-content/60">Realtime status</p>
-                    <h2 class="text-3xl font-display text-white">Locks are falling fast</h2>
-                </div>
-                <span
-                    class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-base-content/60">
-                    <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                    Auto refresh · 30s
+<section class="flex-1 min-h-0 flex flex-col gap-6">
+    <div class="flex-1 min-h-0 grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)] items-stretch">
+        <div class="h-full min-h-0">
+            <LeaderboardTable competitors={data.competitors} title="Leaderboard" />
+        </div>
+        <div class="glass-panel rounded-2xl p-3 md:p-4 flex flex-col h-full min-h-0">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h2 class="text-base font-display text-white tracking-[0.2em] uppercase">Chasing pack</h2>
+                <span class="text-[0.6rem] uppercase tracking-[0.35em] text-base-content/60">
+                    {#if chasingCompetitors.length}
+                        {chasingCompetitors.length} competitors
+                    {:else}
+                        All top 10
+                    {/if}
                 </span>
             </div>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+            {#if !chasingCompetitors.length}
+                <p class="text-sm text-base-content/70 mt-6">
+                    Not enough competitors yet...
+                </p>
+            {:else}
+                <div class="chasing-scroll-mask mt-3 flex-1 min-h-[12rem]">
+                    <ul
+                        bind:this={chaseListEl}
+                        class="vertical-marquee divide-y divide-white/5 text-xs md:text-sm text-base-content/80 h-full"
+                        style={`animation-duration: ${chaseScrollDurationSeconds}s;`}
+                    >
+                        {#each duplicatedChasingCompetitors as competitor, index (index)}
+                            <li class="flex items-center gap-3 py-2">
+                                <span class="font-mono text-xs md:text-sm text-base-content/60 w-9 text-right">
+                                    #{competitor.rank}
+                                </span>
+                                <span class="flex-1 truncate text-white">{competitor.username}</span>
+                                <span class="font-semibold tabular-nums text-xs md:text-sm text-base-content/70">
+                                    {competitor.points} pts
+                                </span>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
+            {/if}
+        </div>
+    </div>
+
+    <div class="glass-panel rounded-2xl p-4 md:p-5">
+        <div class="flex flex-wrap items-center justify-between gap-6">
+            <div class="flex flex-wrap gap-6">
                 {#each heroStats as stat}
-                    <div class="rounded-2xl border border-white/5 bg-base-200/60 p-5">
-                        <p class="text-xs uppercase tracking-[0.4em] text-base-content/50">{stat.label}</p>
-                        <p class="mt-3 text-4xl font-display text-white leading-none">{stat.value}</p>
-                        <p class="text-xs text-base-content/60 mt-2">{stat.helper}</p>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.2em] text-base-content/50">{stat.label}</p>
+                        <p class="mt-1 text-xl font-display text-white leading-none">{stat.value}</p>
+                        {#if stat.helper}
+                            <p class="text-xs text-base-content/60 mt-1">{stat.helper}</p>
+                        {/if}
                     </div>
                 {/each}
             </div>
-        </div>
-    </div>
-    <div class="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-glow">
-        <div class="absolute inset-0 bg-lockd-grid opacity-30"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-secondary/40 blur-3xl"></div>
-        <div class="relative space-y-4">
-            <p class="text-xs uppercase tracking-[0.65em] text-base-content/60">Countdown</p>
-            <h2 class="text-4xl md:text-5xl font-display text-white tracking-tight">{timeRemaining}</h2>
-            <p class="text-sm text-base-content/60">Time until the closing bell.</p>
-            <div class="flex items-center gap-2 text-xs text-base-content/50">
-                <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                Live sync enabled
+            <div class="text-right">
+                <p class="text-xs uppercase tracking-[0.2em] text-base-content/50">Time remaining</p>
+                <p class="text-xl font-display text-white mt-1">{timeRemaining}</p>
+                <p class="text-xs text-base-content/60">Auto refresh every 30 seconds</p>
             </div>
         </div>
     </div>
 </section>
-
-<section class="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)] items-stretch">
-    <div class="h-full">
-        <LeaderboardTable competitors={data.competitors} title="Top 10 Leaderboard" limit={10} />
-    </div>
-    <div class="glass-panel rounded-3xl p-6 md:p-8 flex flex-col shadow-glow">
-        <div class="flex items-baseline justify-between gap-3 flex-wrap">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.45em] text-base-content/60">Chasing Pack</p>
-                <p class="text-2xl font-display text-white">Everyone else</p>
-            </div>
-            <span class="text-xs uppercase tracking-[0.35em] text-base-content/50">
-                {#if chasingCompetitors.length}
-                    {chasingCompetitors.length} competitors
-                {:else}
-                    All top 10
-                {/if}
-            </span>
-        </div>
-
-        {#if !chasingCompetitors.length}
-            <p class="text-sm text-base-content/70 mt-6">
-                Every competitor currently fits inside the top 10 leaderboard.
-            </p>
-        {:else}
-            <div class="chasing-scroll-mask mt-6 h-[26rem]">
-                <ul
-                    class="vertical-marquee divide-y divide-white/5 text-base text-base-content/80"
-                    style={`animation-duration: ${chaseScrollDurationSeconds}s;`}
-                >
-                    {#each duplicatedChasingCompetitors as competitor, index (index)}
-                        <li class="flex items-center gap-4 py-4">
-                            <span class="font-mono text-xs uppercase tracking-[0.3em] text-base-content/60 w-14">
-                                #{competitor.rank}
-                            </span>
-                            <span class="flex-1 truncate text-white">{competitor.username}</span>
-                            <span class="font-semibold tabular-nums text-base text-base-content/70">
-                                {competitor.points} pts
-                            </span>
-                        </li>
-                    {/each}
-                </ul>
-            </div>
-            <p class="text-xs text-base-content/60 mt-4">
-                Slow auto-scroll loops so everyone can find their score.
-            </p>
-        {/if}
-    </div>
-</section>
-
-<style>
-    .chasing-scroll-mask {
-        overflow: hidden;
-        position: relative;
-    }
-
-    .chasing-scroll-mask::before,
-    .chasing-scroll-mask::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 3rem;
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .chasing-scroll-mask::before {
-        top: 0;
-        background: linear-gradient(180deg, rgba(5, 7, 15, 0.95) 0%, transparent 100%);
-    }
-
-    .chasing-scroll-mask::after {
-        bottom: 0;
-        background: linear-gradient(0deg, rgba(5, 7, 15, 0.95) 0%, transparent 100%);
-    }
-
-    .vertical-marquee {
-        animation-name: vertical-marquee-keyframes;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-        will-change: transform;
-    }
-
-    @keyframes vertical-marquee-keyframes {
-        0% {
-            transform: translateY(0);
-        }
-        100% {
-            transform: translateY(-50%);
-        }
-    }
-</style>

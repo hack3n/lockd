@@ -37,58 +37,51 @@
     </div>
 {/if}
 
-<section class="glass-panel rounded-3xl p-6 md:p-8 shadow-glow mb-10 space-y-6">
+<section class="glass-panel rounded-2xl p-5 md:p-6 mb-8 space-y-4">
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <p class="text-xs uppercase tracking-[0.45em] text-base-content/60">Control Room</p>
-            <h2 class="text-3xl font-display text-white">Manage the floor</h2>
+            <h2 class="text-2xl font-display text-white">Staff controls</h2>
             <p class="text-sm text-base-content/70 max-w-2xl">
-                Log opens, add newcomers, and keep the locks flowing for staff and volunteers.
+                Log opens, add competitors, or register new locks during the event.
             </p>
         </div>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2 text-sm">
             <button
-                class="btn btn-primary gap-2"
+                class="btn btn-primary"
                 on:click={() => {
                     createOpenModal.showModal();
                 }}>
-                <i class="bi bi-lightning-charge"></i>
-                Log new open
+                Log open
             </button>
             <button
-                class="btn btn-outline btn-accent gap-2"
+                class="btn btn-outline btn-accent"
                 on:click={() => {
                     createCompetitorModal.showModal();
                 }}>
-                <i class="bi bi-person-plus"></i>
                 Add competitor
             </button>
             <button
-                class="btn btn-outline btn-secondary gap-2"
+                class="btn btn-outline btn-secondary"
                 on:click={() => {
                     createLockModal.showModal();
                 }}>
-                <i class="bi bi-lock"></i>
                 Add lock
             </button>
         </div>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-3">
-        <div class="rounded-2xl border border-white/5 bg-base-200/60 p-5">
-            <p class="text-xs uppercase tracking-[0.35em] text-base-content/50">Competitors</p>
-            <p class="mt-2 text-3xl font-display text-white leading-none">{data.competitors.length}</p>
-            <p class="text-xs text-base-content/60 mt-1">Checked in</p>
+        <div class="rounded-xl border border-white/5 bg-base-200/40 p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-base-content/50">Competitors</p>
+            <p class="mt-1 text-2xl font-display text-white leading-none">{data.competitors.length}</p>
         </div>
-        <div class="rounded-2xl border border-white/5 bg-base-200/60 p-5">
-            <p class="text-xs uppercase tracking-[0.35em] text-base-content/50">Locks</p>
-            <p class="mt-2 text-3xl font-display text-white leading-none">{data.locks.length}</p>
-            <p class="text-xs text-base-content/60 mt-1">Available challenges</p>
+        <div class="rounded-xl border border-white/5 bg-base-200/40 p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-base-content/50">Locks</p>
+            <p class="mt-1 text-2xl font-display text-white leading-none">{data.locks.length}</p>
         </div>
-        <div class="rounded-2xl border border-white/5 bg-base-200/60 p-5">
-            <p class="text-xs uppercase tracking-[0.35em] text-base-content/50">Opens logged</p>
-            <p class="mt-2 text-3xl font-display text-white leading-none">{data.opens.length}</p>
-            <p class="text-xs text-base-content/60 mt-1">Total submissions</p>
+        <div class="rounded-xl border border-white/5 bg-base-200/40 p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-base-content/50">Opens logged</p>
+            <p class="mt-1 text-2xl font-display text-white leading-none">{data.opens.length}</p>
         </div>
     </div>
 </section>
@@ -100,7 +93,7 @@
 <CreateCompetitorModal bind:modal={createCompetitorModal} />
 <CreateLockModal bind:modal={createLockModal} />
 
-<section class="space-y-8">
+<section class="space-y-4">
     <CompetitorTable competitors={data.competitors} />
     <LockTable locks={data.locks} />
 </section>

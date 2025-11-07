@@ -14,8 +14,9 @@
 		"seed": "node prisma/seed.js"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-node": "^1.3.1",
-		"@sveltejs/kit": "^1.0.0",
+		"@sveltejs/adapter-node": "^5.0.0",
+		"@sveltejs/kit": "^2.48.4",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/typography": "^0.5.9",
 		"@types/humanize-duration": "^3.27.4",
 		"@types/node": "^20.1.7",
@@ -24,14 +25,14 @@
 		"humanize-duration": "^3.31.0",
 		"postcss": "^8.4.20",
 		"prisma": "^5.0.0",
-		"svelte": "^4.0.0",
-		"svelte-check": "^3.0.2",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
 		"tailwindcss": "^3.3.2",
 		"tom-select": "^2.2.2",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.4",
-		"vite": "^4.0.0"
+		"vite": "^7.2.2"
 	},
 	"type": "module",
 	"dependencies": {

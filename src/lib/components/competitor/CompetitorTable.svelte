@@ -19,10 +19,9 @@
 
 <UpdateCompetitorModal bind:modal competitor={modalCompetitor} />
 
-<section class="glass-panel rounded-3xl p-6 md:p-8 shadow-glow">
+<section class="glass-panel rounded-2xl p-5 md:p-6">
     <div class="flex flex-wrap items-baseline justify-between gap-4">
         <div>
-            <p class="text-xs uppercase tracking-[0.45em] text-base-content/60">Roster</p>
             <h2 class="text-2xl font-display text-white">Competitors</h2>
         </div>
         <p class="text-xs uppercase tracking-[0.35em] text-base-content/60">
