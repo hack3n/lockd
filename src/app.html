@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="cyberpunk">
+<html lang="en" data-theme="lockd">
     <head>
         <meta charset="utf-8" />
         <link rel="icon" href="%sveltekit.assets%/favicon.png" />
@@ -10,11 +10,16 @@
         <link
             href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.min.css"
             rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+            rel="stylesheet" />
         %sveltekit.head%
     </head>
     <body
-        class="w-full px-8 md:w-3/4 mx-auto my-12"
+        class="antialiased text-base-content selection:bg-primary selection:text-primary-content"
         data-sveltekit-preload-data="hover">
-        <div style="display: contents">%sveltekit.body%</div>
+        <div class="page-shell">%sveltekit.body%</div>
     </body>
 </html>
